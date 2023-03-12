@@ -1,9 +1,10 @@
-function [traj,gripper_state] = ScrewTrajectory(Xstart, Xend, Tf, timegap,gripper, method)
+function [traj,gripper_state] = ScrewTrajectory(Xstart, Xend, Tf, N, gripper, method)
 % *** CHAPTER 9: TRAJECTORY GENERATION ***
 % Takes Xstart: The initial end-effector configuration,
 %       Xend: The final end-effector configuration,
 %       Tf: Total time of the motion in seconds from rest to rest,
-%       timegap: timestep between each segments
+%       N: The number of points N > 1 (Start and stop) in the discrete
+%          representation of the trajectory,
 %       method: The time-scaling method, where 3 indicates cubic
 %               (third-order polynomial) time scaling and 5 indicates 
 %               quintic (fifth-order polynomial) time scaling.
@@ -44,9 +45,8 @@ function [traj,gripper_state] = ScrewTrajectory(Xstart, Xend, Tf, timegap,grippe
 %    0.0000    1.0000   -0.0000    4.1000
 %         0         0         0    1.0000
 
-N = Tf/timegap + 1;
+timegap = Tf / (N - 1);
 traj = cell(1, N);
-gripper_state = zeros(1,N);
 for i = 1: N
     if method == 3
         s = CubicTimeScaling(Tf, timegap * (i - 1));
@@ -54,11 +54,10 @@ for i = 1: N
         s = QuinticTimeScaling(Tf, timegap * (i - 1));
     end
     traj{i} = Xstart * MatrixExp6(MatrixLog6(TransInv(Xstart) * Xend) * s);
-    if(strcmp(gripper, 'open'))
+    if gripper == 'open'
         gripper_state(i) = 0;
-    elseif(strcmp(gripper, 'close'))
+    else gripper == 'close'
         gripper_state(i) = 1;
-    end
 end
 end
 

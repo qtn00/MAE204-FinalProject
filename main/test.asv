@@ -20,13 +20,13 @@ T_sc_fi = [0 -1 0 0;
 % e-e relative to cube while GRASPING
 T_ce_g = [1 0 0 0;
             0 0 1 0;
-            0 -1 0 0;
+            0 -1 0 0
             0 0 0 1];
 % e-e relative to cube standoff position;
 T_ce_stand = [1 0 0 0;
-            0 0 1 0;
-            0 -1 0 30;
-            0 0 0 1];
+                0 1 0 0;
+                0 0 1 30;
+                0 0 0 1];
 dt = 0.01;
 
 %% Start of the function
@@ -59,10 +59,10 @@ T_se_g_fi = T_sc_fi*T_ce_g;
 [traj5,gripper_state5] = ScrewTrajectory(T_se_stand_fi,T_se_g_fi,tf,dt,'close',3);
 [traj6,gripper_state6] = ScrewTrajectory(T_se_g_fi,T_se_stand_fi,tf,dt,'open',3);
 
-% Gripper State 0 for open and 1 for close for indicing
 traj = [traj1,traj2,traj3,traj4,traj5,traj6];
 gripper_state = [gripper_state1,gripper_state2,gripper_state3,gripper_state4,gripper_state5,gripper_state6];
 
+% % Gripper State 0 for open and 1 for close for indicing
 % % indexofopen = 2*length(traj)/6;
 % % indexofclose = 5*length(traj)/6;
 % % Gripper state value
