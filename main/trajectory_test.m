@@ -8,7 +8,7 @@ close all
 scale = 40; % The size of x, y, z axes of e-e frame shown on graph
 arrowWidth = 2; % Linewidth of x, y, z axes
 plotSample = 20; % Plot for every # state of .csv file
-T = readtable('m.csv'); % .csv output of TrajectoryGenerator
+T = readtable('TrajectoryOutput.csv'); % .csv output of TrajectoryGenerator
 % 3D plot axes limits
 xmin = 0;
 xmax = 600;
