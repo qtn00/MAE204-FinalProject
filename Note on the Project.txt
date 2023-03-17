@@ -1,0 +1,17 @@
+1. Download new tar package (completely different from old lab packages)
+2. In the csv_animate file, need to change the file directory name to whatever the name
+
+
+
+Launch:
+1. project.launch
+2. Need to change the initial joint angles in the launch packages (project.launch)
+
+
+New Task case
+1. ur3_gazebo -> project.world
+	<cube> -> <pose> change cube position and orientation
+
+
+
+Starting position of the robot on page  13
