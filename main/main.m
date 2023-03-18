@@ -37,3 +37,7 @@ for i = 1:length(traj)
     output(i,:) = [traj{i}(1,1:3),traj{i}(2,1:3),traj{i}(3,1:3),traj{i}(1:3,end)',gripper_state(i)];
 end
 csvwrite('TrajectoryOutput.csv', output);
+
+%% Next State
+% for i = 1:
+    
