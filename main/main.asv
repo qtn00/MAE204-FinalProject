@@ -48,15 +48,14 @@ end
 [traj,gripper_state] = TrajectoryGenerator(T_se,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt);
 
 T_sed = traj;
-thetalist(1,:) = [-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6];
 
-for i = 1:length(traj)
-    T_sedn{i} = T_sed{i+1};
-    [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se,T_sed{i},T_sedn{i},kp,ki,dt);
-    Jb = round(JacobianBody(Blist,thetalist(i,:)),8);
+for i = 1:length(traj)-1
+    T_sedn = T_sed(i+1);
+    [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt);
+    Jb = round(JacobianBody(Blist,thetalist),8);
     psuedoJb = round(pinv(Jb),8);
-    thetalist_dot(:,i) = round(pinv(Jb)*V_b(:,i),4);
-    thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot(:,i)',dt,10);
+    thetalist_dot = round(pinv(Jb)*V_b,4);
+
 end
 
 % output = zeros(length(traj),13);
