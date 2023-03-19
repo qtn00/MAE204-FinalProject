@@ -7,6 +7,7 @@ function thetalist_new = NextState(thetalist,thetadot_list,timestep, max_vel)
 %       max_vel : the maximum velocity magnitude
 % Output:
 %       thetalist_new : the next state set of angles
+addpath('mr\')
 
 if thetadot_list > max_vel
     disp('Joint velocity exceeds maximum allowed')

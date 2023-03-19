@@ -1,5 +1,6 @@
 clc; clear all; close all;
 format long;
+addpath('mr\')
 
 %% Initialization
 % Initial Tse
