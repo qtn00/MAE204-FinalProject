@@ -48,17 +48,26 @@ end
 [traj,gripper_state] = TrajectoryGenerator(T_se,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt);
 
 T_sed = traj;
+T_sedn = traj(1,2:end);
 thetalist(1,:) = [-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6];
+V_b = zeros(6,length(traj));
+v_error = zeros(6,length(traj));
+thetalist_dot = zeros(6,length(traj));
 
-for i = 1:length(traj)
-    T_sedn{i} = T_sed{i+1};
-    [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se,T_sed{i},T_sedn{i},kp,ki,dt);
+for i = 1:length(traj)-1
+    
+    [V_b(:,i),v_error(:,i)] = FeedbackControl(T_se,T_sed{i},T_sedn{i},kp,ki,dt);
     Jb = round(JacobianBody(Blist,thetalist(i,:)),8);
     psuedoJb = round(pinv(Jb),8);
     thetalist_dot(:,i) = round(pinv(Jb)*V_b(:,i),4);
     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot(:,i)',dt,10);
+    
 end
-
+output = zeros(length(thetalist),7);
+for ii = 1:length(thetalist)
+    output(ii,:) = [thetalist(ii,:),gripper_state(ii)];
+end
+csvwrite('joint.csv',output);
 % output = zeros(length(traj),13);
 % for i = 1:length(traj)
 %     output(i,:) = [traj{i}(1,1:3),traj{i}(2,1:3),traj{i}(3,1:3),traj{i}(1:3,end)',gripper_state(i)];

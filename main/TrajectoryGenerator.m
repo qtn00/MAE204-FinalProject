@@ -1,7 +1,7 @@
 function [traj,gripper_state]= TrajectoryGenerator(T_se,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt)
 %% Start of the function
 addpath('mr\')
-N = 201;
+N = 10;
 
 % Standoff position relative to {s} above initial cube
 T_se_stand_ini = T_sc_ini*T_ce_stand;
