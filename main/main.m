@@ -4,9 +4,9 @@ addpath('mr\')
 
 %% Initialization
 % Initial Tse
-T_se =  [0 0 1  323.6;
-	    -1 0 0  -335.6;
-	    0 -1 0  237;
+T_se =  [0 0 1  247;
+	    -1 0 0  -169;
+	    0 -1 0  782;
 	    0 0 0    1];
 % Initial Tsc
 T_sc_ini = [1 0 0 450;
@@ -29,7 +29,7 @@ T_ce_stand = [0 0 1 0;
             0 -1 0 30;
             0 0 0 1];
 dt = 0.01;
-kp =0; ki = 0;
+kp =1; ki = 0;
 
 
 S1 = [0,0,1,-300,0,0]';
@@ -62,8 +62,18 @@ for i = 1:length(traj)-1
     psuedoJb = round(pinv(Jb),8);
     thetalist_dot(:,i) = round(pinv(Jb)*V_b(:,i),4);
     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot(:,i)',dt,10);
-    
 end
+
+for a = 1:length(v_error)
+    ang(a) = norm(v_error([1:3],a));
+    lin(a) = norm(v_error(4:6,a));
+end
+figure; hold on 
+subplot(2,1,1)
+plot(1:length(ang),ang);
+subplot(2,1,2)
+plot(1:length(lin),lin);
+
 output = zeros(length(thetalist),7);
 for ii = 1:length(thetalist)
     output(ii,:) = [thetalist(ii,:),gripper_state(ii)];
@@ -75,6 +85,4 @@ csvwrite('joint.csv',output);
 % end
 % csvwrite('TrajectoryOutput.csv', output);
 
-%% Next State
-% for i = 1:
     
