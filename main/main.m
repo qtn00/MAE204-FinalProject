@@ -20,7 +20,7 @@ T_sc_fi = [0 -1 0 0;
             0 0 1 0;
             0 0 0 1];
 % e-e relative to cube while GRASPING
-kp =0; ki = 0;
+kp =1; ki = 0;
 
 %%
 thetalist(1,:) = [-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6]; %Initial states
@@ -57,11 +57,11 @@ V_b = zeros(6,length(traj));
 V_error = zeros(6,length(traj));
 thetalist_dot = zeros(6,length(traj));
 for i = 1:length(traj)-1
-    T_se_current = round(FKinBody(M,Blist,thetalist(i,:)'),1);
+    T_se_current = FKinBody(M,Blist,thetalist(i,:)');
     [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se_current,T_sed{i},T_sedn{i},kp,ki,dt);
-    Jb = round(JacobianBody(Blist,thetalist(i,:)),4);
-    psuedoJb = round(pinv(Jb),4);
-    thetalist_dot = round(psuedoJb*V_b(:,i),4);
+    Jb = JacobianBody(Blist,thetalist(i,:));
+    psuedoJb = pinv(Jb,1e-2);
+    thetalist_dot = psuedoJb*V_b(:,i);
     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot',dt,10);
 %     for i3 = 1:6
 %         if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
@@ -76,8 +76,12 @@ end
 
 %%
 figure; hold on;
+plot(V_error(4,:));
+plot(V_error(5,:));
+plot(V_error(6,:));
 plot(V_error(1,:));
-%plot(V_error(4,:));
+plot(V_error(2,:));
+plot(V_error(3,:));
 % figure; hold on 
 % for a = 1:length(V_error)
 %     ang(a) = norm(V_error([1:3],a));
