@@ -64,7 +64,7 @@ for i = 1:length(traj)-1
     thetalist_dot(:,i) = round(psuedoJb*V_b(:,i),4);
     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot(:,i)',dt,10);
     for i3 = 1:6
-        if thetalist(i+1,i3) > 2*pi
+        if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
             thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
         end
     end
