@@ -1,7 +1,7 @@
 clc; clear all; close all;
 format long;
 addpath('mr\')
-
+savepath
 %% Initialization
 % Initial Tse (initial state) Input of wrapper
 T_se =  [0 0 1  323.6;
