@@ -2,7 +2,6 @@ function V_b = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt)
  
 format long g;
 
-addpath('mr\')
 %% Initial 
 % thetalist = [-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6];
 Kp = kp*eye(6,6);

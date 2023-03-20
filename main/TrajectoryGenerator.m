@@ -1,6 +1,6 @@
 function [traj,gripper_state]= TrajectoryGenerator(T_se,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt)
 %% Start of the function
-addpath('mr\')
+addpath('C:\Users\kpste\Documents\GitHub\MAE204-FinalProject\mr')
 % Tf = 7;
 
 % Standoff position relative to {s} above initial cube
