@@ -6,7 +6,7 @@ format long g;
 thetalist = [-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6];
 T_sed = [0 0 1 300;-1 0 0 -300;0 -1 0 237;0 0 0 1];
 T_sedn = [0 0 1 290;-1 0 0 -290;0 -1 0 237;0 0 0 1];
-kp = 1; ki = 0;
+kp = 0; ki = 0;
 dt = 0.01;
 
 S1 = [0,0,1,-300,0,0]';
@@ -23,8 +23,8 @@ for i = 1:length(Slist)
 end
 T_se = FKinSpace(M,Slist,thetalist.');
 
-V_b = round(FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt),5);
+V_b = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt);
 Jb = round(JacobianBody(Blist,thetalist),8);
 psuedoJb = round(pinv(Jb),8);
 thetalist_dot = round(pinv(Jb)*V_b,4);
-
+V_error = se3ToVec(round(MatrixLog6(TransInv(T_se)*T_sed),2));
