@@ -1,4 +1,4 @@
-function V_b = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt)
+function [V_b,X_e] = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt)
  
 format long g;
 
