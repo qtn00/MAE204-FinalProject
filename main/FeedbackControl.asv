@@ -1,4 +1,4 @@
-function [V_b,V_error] = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt,thetalist)
+function [V_b,V_error,thetalist] = FeedbackControl(thetalist,T_sed,T_sedn,kp,ki,dt)
  
 format long g;
 
@@ -25,13 +25,13 @@ for i = 1:length(Slist)
 end
 V_error = zeros(6,length(T_sed)-1);
 V_b =zeros(6,length(T_sed)-1);
-thetalist_dot = (6,)
+thetalist_dot = zeros(6,length(T_sed)-1);
 for ii = 1:length(T_sed)-1
-    T_se_current{ii} = round(FKinBody(M,Blist,thetalist(ii,:)'),1);
+    T_se_current = round(FKinBody(M,Blist,thetalist(ii,:)'),1);
     V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed{ii})*T_sedn{ii}));
-    V_error(:,ii) = se3ToVec(round(MatrixLog6(TransInv(T_se)*T_sed{1}),2));
+    V_error(:,ii) = se3ToVec(round(MatrixLog6(TransInv(T_se_current)*T_sed{ii}),2));
     V_error_sum = sum(V_error,2);
-    feedfor_V_d = Adjoint(TransInv(T_se)*T_sed{ii})*V_d;
+    feedfor_V_d = Adjoint(TransInv(T_se_current)*T_sed{ii})*V_d;
     V_b(:,ii) = feedfor_V_d + Kp*V_error(:,ii) + Ki*(V_error_sum*dt);
     Jb = round(JacobianBody(Blist,thetalist(ii,:)),4);
     psuedoJb = round(pinv(Jb),4);
@@ -42,14 +42,4 @@ for ii = 1:length(T_sed)-1
             thetalist(ii+1,i3) = wrapToPi(thetalist(ii+1,i3));
         end
     end
-
-
-
-
-% T_se = FKinSpace(M,Slist,thetalist.');
-
-
-
-
-
 end
