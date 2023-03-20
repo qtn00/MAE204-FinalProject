@@ -4,10 +4,10 @@ addpath('mr\')
 savepath
 %% Initialization
 % Initial Tse (initial state) Input of wrapper
-% T_se =  [0 0 1  323.6;
-% 	    -1 0 0  -335.6;
-% 	    0 -1 0  237;
-% 	    0 0 0    1];
+T_se =  [0 0 1  323.6;
+	    -1 0 0  -335.6;
+	    0 -1 0  237;
+	    0 0 0    1];
 T_reference_ini = [0 1 0 323.6;1 0 0 -335.6; 0 0 -1 237;0 0 0 1];
 % Initial Tsc Input of Wrapper
 T_sc_ini = [1 0 0 450;
@@ -58,7 +58,7 @@ V_error = zeros(6,length(traj));
 thetalist_dot = zeros(6,length(traj));
 for i = 1:length(traj)-1
     T_se_current{i} = round(FKinBody(M,Blist,thetalist(i,:)'),1);
-    V_b(:,i) = round(FeedbackControl(T_se_current{i},T_sed{i},T_sedn{i},kp,ki,dt),5);
+    V_b(:,i) = FeedbackControl(T_se,T_sed{i},T_sedn{i},kp,ki,dt);
     Jb = round(JacobianBody(Blist,thetalist(i,:)),4);
     psuedoJb = round(pinv(Jb),4);
     thetalist_dot(:,i) = round(psuedoJb*V_b(:,i),4);
