@@ -31,7 +31,7 @@ T_ce_g = [0 0 1 0;
 % e-e relative to cube standoff position;
 T_ce_stand = [0 0 1 0;
             -1 0 0 0;
-            0 -1 0 30;
+            0 -1 0 50;
             0 0 0 1];
 dt = 0.01;
 
@@ -57,7 +57,7 @@ V_b = zeros(6,length(traj));
 V_error = zeros(6,length(traj));
 thetalist_dot = zeros(6,length(traj));
 for i = 1:length(traj)-1
-    T_se_current = round(FKinSpace(M,Blist,thetalist(i,:)'),1);
+    T_se_current = round(FKinBody(M,Blist,thetalist(i,:)'),1);
     [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se_current,T_sed{i},T_sedn{i},kp,ki,dt);
     Jb = round(JacobianBody(Blist,thetalist(i,:)),4);
     psuedoJb = round(pinv(Jb),4);
@@ -76,7 +76,7 @@ end
 
 %%
 figure; hold on;
-plot(V_error(3,:));
+plot(V_error(1,:));
 %plot(V_error(4,:));
 % figure; hold on 
 % for a = 1:length(V_error)
