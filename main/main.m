@@ -57,17 +57,17 @@ V_b = zeros(6,length(traj));
 V_error = zeros(6,length(traj));
 thetalist_dot = zeros(6,length(traj));
 for i = 1:length(traj)-1
-    T_se_current{i} = round(FKinSpace(M,Slist,thetalist(i,:)'),1);
+    T_se_current{i} = round(FKinBody(M,Blist,thetalist(i,:)'),1);
     V_b(:,i) = round(FeedbackControl(T_se_current{i},T_sed{i},T_sedn{i},kp,ki,dt),5);
     Jb = round(JacobianBody(Blist,thetalist(i,:)),4);
     psuedoJb = round(pinv(Jb),4);
     thetalist_dot(:,i) = round(psuedoJb*V_b(:,i),4);
     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot(:,i)',dt,10);
-    for i3 = 1:6
-        if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
-            thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
-        end
-    end
+%     for i3 = 1:6
+%         if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
+%             thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
+%         end
+%     end
     V_error(:,i) = se3ToVec(round(MatrixLog6(TransInv(T_se_current{i})*T_sed{i}),2));
 
 end

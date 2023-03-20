@@ -26,23 +26,35 @@ Blist = zeros(6,6);
 for i = 1:length(Slist)
     Blist(:,i) = Adjoint(TransInv(M))*Slist(:,i);
 end
-V_error = zeros(6,length(T_sed)-1);
-V_b =zeros(6,length(T_sed)-1);
-thetalist_dot = zeros(6,length(T_sed)-1);
-for ii = 1:1
-    T_se_current = round(FKinBody(M,Blist,thetalist(ii,:)'),1);
-    V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed)*T_sedn));
-    V_error(:,ii) = se3ToVec(round(MatrixLog6(TransInv(T_se_current)*T_sed),2));
-    V_error_sum = sum(V_error,2);
-    feedfor_V_d = Adjoint(TransInv(T_se_current)*T_sed)*V_d;
-    V_b(:,ii) = feedfor_V_d + Kp*V_error(:,ii) + Ki*(V_error_sum*dt);
-    Jb = round(JacobianBody(Blist,thetalist(ii,:)),4);
-    psuedoJb = round(pinv(Jb),4);
-    thetalist_dot(:,ii) = round(psuedoJb*V_b(:,ii),4);
-    thetalist(ii+1,:) = NextState(thetalist(ii,:),thetalist_dot(:,ii)',dt,10);
-    for i3 = 1:6
-        if thetalist(ii+1,i3) > pi || thetalist(ii+1,i3) < -pi
-            thetalist(ii+1,i3) = wrapToPi(thetalist(ii+1,i3));
-        end
-    end
-end
+V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed)*T_sedn));
+T_se = FKinSpace(M,Slist,thetalist.');
+feedfor_V_d = Adjoint(TransInv(T_se)*T_sed)*V_d;
+
+X_e = se3ToVec(MatrixLog6(TransInv(T_se)*T_sed));
+V_b = feedfor_V_d + Kp*X_e + Ki*(X_e*dt);
+
+Jb = round(JacobianBody(Blist,thetalist),4);
+psuedoJb = round(pinv(Jb),4);
+thetalist_dot = round(psuedoJb*V_b,4);
+thetalist = NextState(thetalist,thetalist_dot',dt,10);
+
+% V_error = zeros(6,length(T_sed)-1);
+% V_b =zeros(6,length(T_sed)-1);
+% thetalist_dot = zeros(6,length(T_sed)-1);
+% for ii = 1:1
+%     T_se_current = round(FKinBody(M,Blist,thetalist(ii,:)'),1);
+%     V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed)*T_sedn));
+%     V_error(:,ii) = se3ToVec(round(MatrixLog6(TransInv(T_se_current)*T_sed),2));
+%     V_error_sum = sum(V_error,2);
+%     feedfor_V_d = Adjoint(TransInv(T_se_current)*T_sed)*V_d;
+%     V_b(:,ii) = feedfor_V_d + Kp*V_error(:,ii) + Ki*(V_error_sum*dt);
+%     Jb = round(JacobianBody(Blist,thetalist(ii,:)),4);
+%     psuedoJb = round(pinv(Jb),4);
+%     thetalist_dot(:,ii) = round(psuedoJb*V_b(:,ii),4);
+%     thetalist(ii+1,:) = NextState(thetalist(ii,:),thetalist_dot(:,ii)',dt,10);
+%     for i3 = 1:6
+%         if thetalist(ii+1,i3) > pi || thetalist(ii+1,i3) < -pi
+%             thetalist(ii+1,i3) = wrapToPi(thetalist(ii+1,i3));
+%         end
+%     end
+% end
