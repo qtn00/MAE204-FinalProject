@@ -30,7 +30,9 @@ end
 
 V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed)*T_sedn));
 % T_se = FKinSpace(M,Slist,thetalist.');
+
 feedfor_V_d = Adjoint(TransInv(T_se)*T_sed)*V_d;
 
 X_e = se3ToVec(MatrixLog6(TransInv(T_se)*T_sed));
+
 V_b = feedfor_V_d + Kp*X_e + Ki*(X_e*dt);

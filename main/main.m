@@ -8,7 +8,7 @@ savepath
 % 	    -1 0 0  -335.6;
 % 	    0 -1 0  237;
 % 	    0 0 0    1];
-T_reference_ini = [0 1 0 323.6;1 0 0 -335.6; 0 0 -1 237;0 0 0 1];
+T_reference_ini = [0 0 1 323.6;-1 0 0 -335.6; 0 -1 0 237;0 0 0 1];
 % Initial Tsc Input of Wrapper
 T_sc_ini = [1 0 0 450;
     0 1 0 -300;
@@ -31,7 +31,7 @@ T_ce_g = [0 0 1 0;
 % e-e relative to cube standoff position;
 T_ce_stand = [0 0 1 0;
             -1 0 0 0;
-            0 -1 0 100;
+            0 -1 0 30;
             0 0 0 1];
 dt = 0.01;
 
@@ -45,8 +45,8 @@ Slist = [S1 S2 S3 S4 S5 S6];
 M = [1 0 0 457; 0 1 0 78; 0 0 1 155; 0 0 0 1];
 
 Blist = zeros(6,6);
-for ii = 1:length(Slist)
-    Blist(:,ii) = Adjoint(TransInv(M))*Slist(:,ii);
+for i3 = 1:length(Slist)
+    Blist(:,i3) = Adjoint(TransInv(M))*Slist(:,i3);
 end
 %% Trajectory Generator:
 [traj,gripper_state] = TrajectoryGenerator(T_reference_ini,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt);
@@ -57,12 +57,12 @@ V_b = zeros(6,length(traj));
 V_error = zeros(6,length(traj));
 thetalist_dot = zeros(6,length(traj));
 for i = 1:length(traj)-1
-    T_se_current{i} = round(FKinSpace(M,Blist,thetalist(i,:)'),1);
-    [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se_current{i},T_sed{i},T_sedn{i},kp,ki,dt);
+    T_se_current = round(FKinSpace(M,Blist,thetalist(i,:)'),1);
+    [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se_current,T_sed{i},T_sedn{i},kp,ki,dt);
     Jb = round(JacobianBody(Blist,thetalist(i,:)),4);
     psuedoJb = round(pinv(Jb),4);
-    thetalist_dot(:,i) = round(psuedoJb*V_b(:,i),4);
-    thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot(:,i)',dt,10);
+    thetalist_dot = round(psuedoJb*V_b(:,i),4);
+    thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot',dt,10);
 %     for i3 = 1:6
 %         if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
 %             thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
@@ -76,7 +76,7 @@ end
 
 %%
 figure; hold on;
-plot(V_error(1,:));
+plot(V_error(3,:));
 %plot(V_error(4,:));
 % figure; hold on 
 % for a = 1:length(V_error)
@@ -91,11 +91,11 @@ for ii = 1:length(thetalist)
 end
 csvwrite('joint.csv',output);
 
-% output = zeros(length(traj),13);
-% for i = 1:length(traj)
-%     output(i,:) = [traj{i}(1,1:3),traj{i}(2,1:3),traj{i}(3,1:3),traj{i}(1:3,end)',gripper_state(i)];
-% end
-% csvwrite('m.csv', output);
+output = zeros(length(traj),13);
+for i = 1:length(traj)
+    output(i,:) = [traj{i}(1,1:3),traj{i}(2,1:3),traj{i}(3,1:3),traj{i}(1:3,end)',gripper_state(i)];
+end
+csvwrite('m.csv', output);
 
     
     
