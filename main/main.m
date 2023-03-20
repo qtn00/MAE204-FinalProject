@@ -43,8 +43,8 @@ S6 = [0,1,0,-155,0,457]';
 Slist = [S1 S2 S3 S4 S5 S6];
 M = [1 0 0 457; 0 1 0 78; 0 0 1 155; 0 0 0 1];
 Blist = zeros(6,6);
-for i = 1:length(Slist)
-    Blist(:,i) = Adjoint(TransInv(M))*Slist(:,i);
+for i2 = 1:length(Slist)
+    Blist(:,i2) = Adjoint(TransInv(M))*Slist(:,i2);
 end
 
 %% Trajectory Generator:
@@ -63,6 +63,11 @@ for i = 1:length(traj)-1
     psuedoJb = round(pinv(Jb),4);
     thetalist_dot(:,i) = round(psuedoJb*V_b(:,i),4);
     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot(:,i)',dt,10);
+    for i3 = 1:6
+        if thetalist(i+1,i3) > 2*pi
+            thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
+        end
+    end
     V_error(:,i) = se3ToVec(round(MatrixLog6(TransInv(T_se_current{i})*T_sed{i}),2));
 
 end
