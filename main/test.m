@@ -1,6 +1,6 @@
 clc; clear all;
-thetalist{1} = [0,0,0,0,0,0];
-vel = [pi/4,pi/4,pi/4,pi/4,pi/4,pi/4];
+thetalist{1} = [-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6];
+vel = [0.1,0.1,0.1,0.1,0.1,0.1];
 maxvel = pi;
 dt = 0.01;
 Tf = 1;
@@ -14,4 +14,4 @@ for i = 1:N
     output(i,:) = [thetalist{i},gripper_state(i)];
 end
 
-csvwrite('m.csv',output)
+csvwrite('next.csv',output)

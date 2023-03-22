@@ -68,7 +68,7 @@ for i = 1:length(traj)-1
 %             thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
 %         end
 %     end
-    V_error(:,i) = se3ToVec(round(MatrixLog6(TransInv(T_se_current{i})*T_sed{i}),2));
+    
 
 end
     
