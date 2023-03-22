@@ -2,7 +2,6 @@ function [V_b,X_e] = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt)
  
 format long g;
 
-addpath('mr\')
 %% Initial 
 
 Kp = kp*eye(6,6);
@@ -30,6 +29,7 @@ end
 
 V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed)*T_sedn));
 % T_se = FKinSpace(M,Slist,thetalist.');
+
 feedfor_V_d = Adjoint(TransInv(T_se)*T_sed)*V_d;
 
 X_e = se3ToVec(MatrixLog6(TransInv(T_se)*T_sed));
