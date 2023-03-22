@@ -1,4 +1,4 @@
-function [V_b,X_e] = FeedbackControl(T_se,T_sed,T_sedn,kp,ki,dt)
+function [V_b,x_e,thetalist] = FeedbackControl(thetalistin,T_sed,T_sedn,kp,ki,dt)
  
 format long g;
 
@@ -7,10 +7,8 @@ format long g;
 Kp = kp*eye(6,6);
 Ki = ki*eye(6,6);
 
-
+thetalist(1,:) = thetalistin;
 %% FeedbackControl
-Kp = kp*eye(6,6);
-Ki = ki*eye(6,6);
 
 S1 = [0,0,1,-300,0,0]';
 S2 = [0,1,0,-240,0,0]';
@@ -23,15 +21,29 @@ M = [1 0 0 457; 0 1 0 78; 0 0 1 155; 0 0 0 1];
 
 
 Blist = zeros(6,6);
-for i = 1:length(Slist)
-    Blist(:,i) = Adjoint(TransInv(M))*Slist(:,i);
+for ii = 1:length(Slist)
+    Blist(:,ii) = Adjoint(TransInv(M))*Slist(:,ii);
 end
 
-V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed)*T_sedn));
-% T_se = FKinSpace(M,Slist,thetalist.');
+x_e = zeros(6,length(T_sed));
+V_b = zeros(6,length(T_sed));
 
-feedfor_V_d = Adjoint(TransInv(T_se)*T_sed)*V_d;
 
-X_e = se3ToVec(MatrixLog6(TransInv(T_se)*T_sed));
+for i = 1:length(T_sed)-1
+    T_se_current{i} = FKinBody(M,Blist,thetalist(i,:)');
+    V_d = se3ToVec((1/dt)*MatrixLog6(TransInv(T_sed{i})*T_sedn{i}));
+    feedfor_V_d = Adjoint(TransInv(T_se_current{i})*T_sed{i})*V_d;
+    x_e(:,i) = se3ToVec(MatrixLog6(TransInv(T_se_current{i})*T_sed{i}));
+    V_b(:,i) = feedfor_V_d + Kp*x_e(:,i) + Ki*(sum(x_e*dt,2));
+    Jb = JacobianBody(Blist,thetalist(i,:));
+    psuedoJb = pinv(Jb,1e-2);
+    thetalist_dot = psuedoJb*V_b(:,i);
+    thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot',dt,10);
+%     for i3 = 1:6
+%         if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
+%             thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
+%         end
+%     end
+%     
 
-V_b = feedfor_V_d + Kp*X_e + Ki*(X_e*dt);
+end
