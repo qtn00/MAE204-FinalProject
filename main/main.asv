@@ -18,10 +18,10 @@ T_sc_fi = [0 -1 0 0;
             0 0 1 0;
             0 0 0 1];
 % e-e relative to cube while GRASPING
-kp =1.5; ki = 0;
+kp =0; ki = 0;
 
 %%
-thetalistin = [0.000501442170089313+(pi/6),4.71153838730754,0.00213337924610927,-1.57207911278733,-1.57129776896494,6.77755554611493e-08];  % [-1.39604429642122,-pi/2,0.171694676478577,-1.15935873423147,-0.698350805972130,0]; %[-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6]; %Initial states
+thetalistin = 0.000501442170089313,4.71153838730754,0.00213337924610927,-1.57207911278733,-1.57129776896494,6.77755554611493e-08]  % [-1.39604429642122,-pi/2,0.171694676478577,-1.15935873423147,-0.698350805972130,0]; %[-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6]; %Initial states
 T_ce_g = [0 0 1 0;
             -1 0 0 0;
             0 -1 0 0;
@@ -91,7 +91,7 @@ output = zeros(length(thetalist),7);
 for ii = 1:length(thetalist)
     output(ii,:) = [thetalist(ii,:),gripper_state(ii)];
 end
-csvwrite('9.csv',output);
+csvwrite('angle.csv',output);
 
 % output = zeros(length(traj),13);
 % for i = 1:length(traj)

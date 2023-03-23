@@ -39,11 +39,11 @@ for i = 1:length(T_sed)-1
     psuedoJb = pinv(Jb,1e-2);
     thetalist_dot = psuedoJb*V_b(:,i);
     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot',dt,10);
-%     for i3 = 1:6
-%         if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
-%             thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
-%         end
-%     end
-%     
+    for i3 = 1:6
+        if thetalist(i,i3) > pi || thetalist(i,i3) < -pi
+            thetalist(i,i3) = wrapToPi(thetalist(i,i3));
+        end
+    end
+  
 
 end
