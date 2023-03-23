@@ -3,7 +3,6 @@ function [V_b,x_e,thetalist] = FeedbackControl(thetalistin,T_sed,T_sedn,kp,ki,dt
 format long g;
 
 %% Initial 
-
 Kp = kp*eye(6,6);
 Ki = ki*eye(6,6);
 
@@ -35,6 +34,7 @@ for i = 1:length(T_sed)-1
     feedfor_V_d = Adjoint(TransInv(T_se_current{i})*T_sed{i})*V_d;
     x_e(:,i) = se3ToVec(MatrixLog6(TransInv(T_se_current{i})*T_sed{i}));
     V_b(:,i) = feedfor_V_d + Kp*x_e(:,i) + Ki*(sum(x_e*dt,2));
+%     V_b(:,i) = Kp*x_e(:,i) + Ki*(sum(x_e*dt,2));
     Jb = JacobianBody(Blist,thetalist(i,:));
     psuedoJb = pinv(Jb,1e-2);
     thetalist_dot = psuedoJb*V_b(:,i);
@@ -44,6 +44,10 @@ for i = 1:length(T_sed)-1
             thetalist(i,i3) = wrapToPi(thetalist(i,i3));
         end
     end
-  
+for i3 = 1:6
+    if thetalist(end,i3) > pi || thetalist(end,i3) < -pi
+        thetalist(end,i3) = wrapToPi(thetalist(end,i3));
+    end
+end
 
 end

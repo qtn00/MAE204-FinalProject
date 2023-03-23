@@ -18,7 +18,7 @@ T_sc_fi = [0 -1 0 0;
             0 0 1 0;
             0 0 0 1];
 % e-e relative to cube while GRASPING
-kp =1.5; ki = 0;
+kp = 4; ki = 0;
 
 %%
 thetalistin = [0.000501442170089313+(pi/6),4.71153838730754,0.00213337924610927,-1.57207911278733,-1.57129776896494,6.77755554611493e-08];  % [-1.39604429642122,-pi/2,0.171694676478577,-1.15935873423147,-0.698350805972130,0]; %[-pi/6,-pi/2,pi/2,-pi/2,-pi/2,5*pi/6]; %Initial states
@@ -54,28 +54,6 @@ T_sedn = traj(1,2:end);
 
 [V_b,x_e,thetalist] = FeedbackControl(thetalistin,T_sed,T_sedn,kp,ki,dt);
 
-
-% V_b = zeros(6,length(traj));
-% V_error = zeros(6,length(traj));
-% thetalist_dot = zeros(6,length(traj));
-% for i = 1:length(traj)-1
-%     T_se_current = FKinBody(M,Blist,thetalist(i,:)');
-%     [V_b(:,i),V_error(:,i)] = FeedbackControl(T_se_current,T_sed{i},T_sedn{i},kp,ki,dt);
-%     Jb = JacobianBody(Blist,thetalist(i,:));
-%     psuedoJb = pinv(Jb,1e-2);
-%     thetalist_dot = psuedoJb*V_b(:,i);
-%     thetalist(i+1,:) = NextState(thetalist(i,:),thetalist_dot',dt,10);
-% %     for i3 = 1:6
-% %         if thetalist(i+1,i3) > 2*pi || thetalist(i+1,i3) < -2*pi
-% %             thetalist(i+1,i3) = wrapToPi(thetalist(i+1,i3));
-% %         end
-% %     end
-% %     V_error(:,i) = se3ToVec(round(MatrixLog6(TransInv(T_se_current{i})*T_sed{i}),2));
-% 
-% end
-    
-
-
 %%
 figure; hold on;
 plot(x_e(1,:));
@@ -84,14 +62,16 @@ plot(x_e(3,:));
 plot(x_e(4,:));
 plot(x_e(5,:));
 plot(x_e(6,:));
-legend('wx','wy','wz','vx','vy','vz');
-
+legend('wx (rad/cs)','wy (rad/cs)','wz (rad/cs)','vx (mm/cs)','vy (mm/cs)','vz (mm/cs)');
+title('Error Twist vs Time');
+xlabel('Time (cs)');
+ylabel('Error Twist')
 
 output = zeros(length(thetalist),7);
 for ii = 1:length(thetalist)
     output(ii,:) = [thetalist(ii,:),gripper_state(ii)];
 end
-csvwrite('9.csv',output);
+csvwrite('10.csv',output);
 
 % output = zeros(length(traj),13);
 % for i = 1:length(traj)
