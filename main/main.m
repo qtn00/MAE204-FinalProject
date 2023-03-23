@@ -8,15 +8,23 @@ format long;
 % 	    0 0 0    1];
 T_reference_ini = [0 1 0 247;1 0 0 -169; 0 0 -1 782;0 0 0 1];
 % Initial Tsc Input of Wrapper
-T_sc_ini = [1 0 0 450;
-    0 1 0 -300;
-    0 0 1 0;
-    0 0 0 1];
-% Final Tsc Input of Wrapper
-T_sc_fi = [0 -1 0 0;
+T_sc_ini = [0 -1 0 0;
             1 0 0 100;
             0 0 1 0;
             0 0 0 1];
+% % T_sc_ini = [1 0 0 450;
+%     0 1 0 -300;
+%     0 0 1 0;
+%     0 0 0 1];
+% Final Tsc Input of Wrapper
+T_sc_fi = [0 -1 0 -500;
+            1 0 0 -200;
+            0 0 1 0;
+            0 0 0 1];
+% T_sc_fi = [0 -1 0 0;
+%             1 0 0 100;
+%             0 0 1 0;
+%             0 0 0 1];
 % e-e relative to cube while GRASPING
 kp = 4; ki = 0;
 
@@ -71,10 +79,5 @@ output = zeros(length(thetalist),7);
 for ii = 1:length(thetalist)
     output(ii,:) = [thetalist(ii,:),gripper_state(ii)];
 end
-csvwrite('10.csv',output);
+csvwrite('12.csv',output);
 
-% output = zeros(length(traj),13);
-% for i = 1:length(traj)
-%     output(i,:) = [traj{i}(1,1:3),traj{i}(2,1:3),traj{i}(3,1:3),traj{i}(1:3,end)',gripper_state(i)];
-% end
-% csvwrite('m.csv', output);

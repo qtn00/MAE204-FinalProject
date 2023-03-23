@@ -1,5 +1,5 @@
 function [V_b,x_e,thetalist] = FeedbackControl(thetalistin,T_sed,T_sedn,kp,ki,dt)
- 
+
 format long g;
 
 %% Initial 
