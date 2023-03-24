@@ -2,8 +2,9 @@ function [traj,gripper_state] = ScrewTrajectory_modified(Xstart, Xend, Tf, timeg
 % *** CHAPTER 9: TRAJECTORY GENERATION ***
 % Takes Xstart: The initial end-effector configuration,
 %       Xend: The final end-effector configuration,
-%       N = number of reference configurations
-%       timegap: timestep between each segments
+%       Tf: The total time to move from Xstart to Xend
+%       timegap: The timestep between each segments
+%       gripper: The gripper state (0 for open, 1 for closed)
 %       method: The time-scaling method, where 3 indicates cubic
 %               (third-order polynomial) time scaling and 5 indicates 
 %               quintic (fifth-order polynomial) time scaling.

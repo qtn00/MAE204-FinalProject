@@ -1,7 +1,42 @@
 function [traj,gripper_state]= TrajectoryGenerator(T_se,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt)
-%% Start of the function
+% TrajectoryGenerator: generates a set of tranformation matrices
+% Input:
+%       T_se : The initial configuration of the end-effector in reference
+%              to the space frame [4 x 4 matrix]
+%       T_sc_ini : The initial configuration of the cube in reference to
+%                  the space frame [4 x 4 matrix]
+%       T_sc_fi : The desired final configuration of the cube in reference
+%                 to the space frame [4 x 4 matrix]
+%       T_ce_g : The configuration of the end-effector relative to the cube
+%                while grasping [4 x 4 matrix]
+%       T_ce_stand : The stand-off configuration of the end-effector above
+%                    the cube (before and after grasping) relative to the
+%                    cube [4 x 4 matrix]
+%       dt : The timestep between reference configurations [int/double]
+% Output:
+%       traj : The desired trajectory from the initial configuration to the
+%              final configuration [1 x N cell array filled with 4x4
+%              tranformation matrixes]
+%       gripper_state : The state of the gripper (0 for open, 1 for closed)
+%                       [1 x N matrix]
+%
+% Example Input:
+% clc; clear all;
+% T_se =  [0 0 1 323.6; -1 0 0 -335.6; 0 -1 0 237; 0 0 0 1];
+% T_sc_ini = [1 0 0 450; 0 1 0 -300; 0 0 1 0; 0 0 0 1];
+% T_sc_fi = [0 -1 0 0; 1 0 0 100; 0 0 1 0; 0 0 0 1];
+% T_ce_g = [0 0 1 0; -1 0 0 0; 0 -1 0 0; 0 0 0 1];
+% T_ce_stand = [0 0 1 0; -1 0 0 0; 0 -1 0 50; 0 0 0 1];
+% dt = 0.5;
+% [traj,gripper_state] = TrajectoryGenerator(T_se,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt)
+% 
+% Output:
+% traj = 1 x 26 cell array of 4 x 4 doubles
+% gripper_state = 0     0     0     0     0     0     0     0     0     1
+%                 1     1     1     1     1     1     1     1     1     1
+%                 1     1     1     1     0     0
 
-
+%% Initialize
 % Standoff position relative to {s} above initial cube
 T_se_stand_ini = T_sc_ini*T_ce_stand;
 
@@ -14,7 +49,7 @@ T_se_stand_fi = T_sc_fi*T_ce_stand;
 % Grasp position relative to {s} at final cube
 T_se_g_fi = T_sc_fi*T_ce_g;
 
-% Trajectory of each segment:
+%% Trajectory of each segment:
 % Moving from initial configuration to standoff
 [traj1,gripper_state1] = ScrewTrajectory_modified(T_se,T_se_stand_ini,3 ,dt,'open',3);
 % Moving to grasping position at inital cube position and grap the cube
