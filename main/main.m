@@ -44,6 +44,8 @@ end
 [traj,gripper_state] = TrajectoryGenerator(T_reference_ini,T_sc_ini,T_sc_fi,T_ce_g,T_ce_stand,dt);
 T_sed = traj;
 T_sedn = traj(1,2:end);
+
+%% Motion control with FeedbackControl:
 [V_b,x_e,thetalist] = FeedbackControl(thetalistin,T_sed,T_sedn,kp,ki,dt);
 
 %% Plotting Error Twist (x_e)
@@ -60,8 +62,18 @@ xlabel('Time (cs)');
 ylabel('Error Twist')
 
 %% Create output file of thetalist and gripper state
+% -The first 6 elements of output are the joint angles and the last element
+% is the grippper state (0 for open and 1 for close)
+% - Second out out is a 6-vector end-effector error as a function of time
+% Example Output:
+% output = [pi/2,pi/2,pi/6,0,-pi/4,0,1]
+% V_error = [0.1,0.2,0,0.2,0.1,0]';
+
 output = zeros(length(thetalist),7);
 for ii = 1:length(thetalist)
     output(ii,:) = [thetalist(ii,:),gripper_state(ii)];
 end
+
+V_error = sum(x_e,2);
 csvwrite('12.csv',output);
+
