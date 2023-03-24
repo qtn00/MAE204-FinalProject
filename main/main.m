@@ -67,13 +67,12 @@ ylabel('Error Twist')
 % - Second out out is a 6-vector end-effector error as a function of time
 % Example Output:
 % output = [pi/2,pi/2,pi/6,0,-pi/4,0,1]
-% V_error = [0.1,0.2,0,0.2,0.1,0]';
+% V_error = [0.1,0.2,0,0.2,0.1,0; -0.2,-1,-3,0,100,-300]';
 
 output = zeros(length(thetalist),7);
 for ii = 1:length(thetalist)
     output(ii,:) = [thetalist(ii,:),gripper_state(ii)];
 end
-
-V_error = sum(x_e,2);
+V_error = x_e;
 csvwrite('12.csv',output);
 
