@@ -1,12 +1,14 @@
 function thetalist_new = NextState(thetalist,thetadot_list,timestep, max_vel)
-% NextState: based on a simple first-order Euler step that output the next stage set of angles
+% NextState: based on a simple first-order Euler step that output the next
+% stage set of angles
 % Input:
-%       thetalist : set of angles of current state of the robot (6 jointsangles)
-%       thetadot_list : six joint angular velocities
-%       timestep : the time step between each state
-%       max_vel : the maximum velocity magnitude
+%       thetalist : The set of angles of current state of the robot
+%                   [1 x 6 vector]
+%       thetadot_list : Six joint angular velocities [1 x 6 vector]
+%       timestep : The time step between each state [int/double]
+%       max_vel : The maximum velocity magnitude [int/double]
 % Output:
-%       thetalist_new : the next state set of angles
+%       thetalist_new : The next state set of angles [1 x 6 vector]
 %
 % Example Input:
 % clc; clear all;
