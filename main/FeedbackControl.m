@@ -88,7 +88,8 @@ for i = 1:length(T_sed)-1
             thetalist(i,i3) = wrapToPi(thetalist(i,i3));
         end
     end
-% wrapToPi function wraps the angle to fall between -pi and pi
+
+%% wrapToPi function wraps the angle to fall between -pi and pi
 for i3 = 1:6
     if thetalist(end,i3) > pi || thetalist(end,i3) < -pi
         thetalist(end,i3) = wrapToPi(thetalist(end,i3));
